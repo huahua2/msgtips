@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+* {
+    margin: 0;
+    padding: 0;
+}
+
+    ul,li {
+    list-style: none;
+}
+        .msgtips {
+            width: 100%;
+            text-align: center;
+            height: 40px;
+            line-height: 40px;
+            font-size: 14px;
+            color: #fff;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 9999999999;
+            -webkit-animation: animSlideTop 0.3s 0s forwards;
+        }
+
+        .msgtips.e {
+            background: #ff6666;
+        }
+
+        .msgtips.s {
+            background: #41bf54;
+        }
+
+        .msgtips.out {
+            -webkit-animation: animOut 0.3s 0s forwards;
+        }
+
+        @-webkit-keyframes animSlideTop {
+            0% {
+                opacity: 1;
+                -webkit-transform: translate3d(0, -100%, 0);
+            }
+            100% {
+                opacity: 1;
+                -webkit-transform: translate3d(0, 0, 0);
+            }
+        }
+
+        @-webkit-keyframes animOut {
+            0% {
+                -webkit-transform: translate3d(0, 0, 0);
+                opacity: 1;
+            }
+            100% {
+                -webkit-transform: translate3d(0, -100%, 0);
+                opacity: 0;
+            }
+        }
+
+.wx_loading,.modal{
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    z-index: 90;
+    background-color: transparent;
+}
+.wx_loading_inner {
+    text-align: center;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: #fff;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    margin-left: -70px;
+    margin-top: -48px;
+    width: 140px;
+    border-radius: 6px;
+    font-size: 14px;
+    padding: 58px 0 10px 0;
+}
+.wx_loading_icon {
+    position: absolute;
+    top: 15px;
+    left: 50%;
+    margin-left: -16px;
+    width: 24px;
+    height: 24px;
+    border: 2px solid #fff;
+    border-radius: 24px;
+    -webkit-animation: gif 1s infinite linear;
+    animation: gif 1s infinite linear;
+    clip: rect(0 auto 12px 0);
+}
+@keyframes gif {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+@-webkit-keyframes gif {
+    0% {
+        -webkit-transform: rotate(0deg);
+    }
+    100% {
+        -webkit-transform: rotate(360deg);
+    }
+}
+
+.modal {
+    background-color: rgba(0, 0, 0, 0.6);
+    padding: 0 30px;
+}
+
+.modal .icon {
+    display: inline-block;
+    width: 32px;
+    height: 29px;
+    background: url(icon.png) no-repeat -187px -49px;
+    background-size: 300px 300px;
+    vertical-align: -8px;
+}
+
+.modal .inner {
+    max-width: 280px;
+    margin: 100px auto 0 auto;
+    background: #fff;
+    min-height: 80px;
+    border-radius: 8px;
+    padding: 10px;
+}
+
+.modal .inner a {
+    color: #0e9de1;
+    text-decoration: underline;
+}
+
+.modal .inner li {
+    padding: 5px 0;
+}
+
+.modal .inner .tit {
+    font-size: 18px;
+    padding-top: 10px;
+    padding-bottom: 8px;
+}
+
+.modal .inner .sub-tit {
+    font-size: 15px;
+    padding-bottom: 8px;
+}
+
+.modal .inner .tit,
+.modal .inner .sub-tit {
+    text-align: center;
+}
+
+.modal .inner .con {
+    min-height: 30px;
+    font-size: 15px;
+    text-align: center;
+    line-height: 25px;
+    padding: 0 15px;
+}
+
+.modal .inner .button {
+    display: -moz-box;
+    display: -webkit-box;
+    display: box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+    padding-bottom: 0;
+}
+
+.modal .inner .button a {
+    border-radius: 3px;
+    height: 42px;
+    line-height: 42px;
+    background: #0e9de1;
+    text-align: center;
+    color: #fff;
+    width: 100%;
+    -moz-box-flex: 1;
+    -webkit-box-flex: 1;
+    box-flex: 1;
+    margin: 3px 5px;
+    display: block;
+    text-decoration: none;
+}
+
+.modal .inner .button a:active {
+    opacity: .7;
+}
+
+.modal .inner .button a.btn-cancel {
+    background: #C3C3C3;
+}
+    </style>
+</head>
+<body style="padding-top: 100px;">
+
+<button onclick='msgtips(3, "s", "恭喜你注册成功");'>正确</button>
+<button onclick='msgtips(3, "e", "请输入用户名");'>错误</button>
+
+<button onclick='msgtips(3, "e", "请输入用户名",function(){alert("我是回调");});'>回调</button>
+<br><br>
+
+<button id="modal" >模态窗口</button><button id="confirm" >确认框</button>
+<br><br>
+<button onclick='loading()' >loading</button>
+
+<button onclick='loading(0)'  style="position: absolute;z-index: 99;">hide loading</button>
+
+
+
+<script src="zepto.js"></script>
+<script>
+
+$(function(){
+    
+    $("#modal").click(function () {
+        
+        //具体参数,要显示confirm框，直接加cancelFn参数即可
+//              //icon: 显示成功图标 默认值隐藏
+//              //tit:标题
+//              //subtit:小标题 默认值隐藏
+//              //con:内容 可写html和行内样式，值使用单引号
+//              // cancelText 取消按钮文本:默认值取消
+//              // okFn:确定按钮回调
+//              // cancelFn取消按钮回调
+//                cancelText 取消按钮文本:默认值取消
+//              // okText 确定按钮文本:默认值确定
+             Dialog.show({
+                 icon:true,
+                 tit:"我是标题!",
+                 subtit:"我是子标题",
+                 con:'<div style="color:#999">我是内容，可以写html测试测试</div>'
+
+             });
+    })
+      $("#confirm").click(function () {
+        
+        Dialog.show({
+                 icon:true,
+                 tit:"我是标题!",
+                 subtit:"我是子标题",
+                 // con:'<div style="color:#999">我是内容，可以写html测试测试</div>',
+                    okFn:function (argument) {
+                        alert("确定");
+                    },
+                    cancelFn:function() {
+                        alert("取消");
+                    }
+
+             });
+    })
+})
+
+    //顶部提示
+    //type:"e"是错误红色，"s"是成功绿色,callbackFun执行完回调
+    function msgtips(time, type, msg, callbackFun) {
+        if (!time) {
+            time = 3 * 1000;
+        } else {
+            time = time * 1000;
+        }
+        if ($(".msgtips").length == 0) {
+            var strinner = "<div class='msgtips " + type + "'>" + msg + "</div>";
+            $(document.body).append(strinner);
+            setTimeout(function() {
+                var t = document.querySelector(".msgtips");
+                $(t).addClass("out");
+                t.addEventListener("webkitAnimationEnd", function() { //动画结束时事件
+                    $(t).remove();
+                    $.isFunction(callbackFun) ? callbackFun() : $.noop;
+                }, false);
+
+            }, time);
+        }
+    }
+//loading方法,显示loading(),隐藏loading(0)
+    function loading(isshow, msg) {
+        $('.wx_loading').remove();
+        msg = msg ? msg : "数据加载中...";
+        if (isshow == undefined || isshow == null) {
+            $(document.body).append('<div class="wx_loading" id="wxloading">\
+            <div class="wx_loading_inner">\
+            <i class="wx_loading_icon"></i>' + msg + '</div></div>')
+        } else
+            $('.wx_loading').remove();
+
+    }
+
+    var Dialog = {
+        show: function(msg) {
+            $('.modal').remove();
+            var args = arguments,
+                opt = args[0] || {};
+            if (typeof opt != 'object') {
+                // 兼容map
+                opt = {};
+                $.each({
+                    1: 'tit',
+                    2: 'okFn',
+                    3: 'cancelFn',
+                    4: 'okText',
+                    5: 'icon',
+                    6: 'subtit',
+                    7: 'cancelText'
+                }, function(k, v) {
+                    if (args[k] != null) opt[v] = args[k];
+                });
+            }
+            opt.tit = opt.tit || msg;
+            opt.icon = opt.icon || false;
+            opt.subtit = opt.subtit || "";
+            opt.okText = opt.okText || '确定';
+            var show_btn_cancel = $.isFunction(opt.cancelFn) ? "" : "none";
+            var show_btn_ok = opt.okText ? "" : "none";
+            var show_btn = show_btn_cancel == "none" && show_btn_ok == "none" ? "none" : "";
+
+            var str = '<div class="modal">\
+             <div class="inner">\
+            <ul>\
+            <li class="tit"><b class="icon" style="display:' + (opt.icon ? "" : "none") + '"></b>' + opt.tit + '</li>\
+        <li class="sub-tit" style="display:' + (opt.subtit != "" ? "" : "none") + '">' + opt.subtit + '</li>\
+        <li class="con">' + (opt.con || "") + '</li>\
+        <li class="button" style="display:' + show_btn + '">\
+            <a href="javascript:;" id="btnCancel" class="btn-cancel" style="display:' + show_btn_cancel + '">' + (opt.cancelText || '取消') + '</a>\
+            <a href="javascript:;" id="btnOk"  class="btn-ok" style="display:' + show_btn_ok + '">' + opt.okText + '</a>\
+        </li>\
+        </ul>\
+        </div>\
+        </div>';
+            $('body').append(str);
+
+            if (show_btn == "none") {
+                $('.modal').addClass('tips')
+                $(".modal").on("webkitAnimationEnd", function() {
+                    $(".modal").remove();
+                    if (opt.okFn) opt.okFn();
+                })
+            }
+
+            return this.loaded(opt);
+        },
+        loaded: function(opt) {
+            var _opt = opt || {};
+            // console.log(opt);
+            var btnok = document.getElementById("btnOk");
+            var btncancel = document.getElementById("btnCancel");
+
+            function _close(triggerDefaultAction) {
+                if (triggerDefaultAction !== false && $.isFunction(_opt.cancelFn))
+                    _opt.cancelFn.apply(null);
+                $(".modal").remove();
+            }
+
+            function _ok(triggerDefaultAction) {
+                if (triggerDefaultAction !== false && $.isFunction(_opt.okFn))
+                    _opt.okFn.apply(null);
+                $(".modal").remove();
+            }
+
+            //为了使btnok点击事件可移除
+            btnok.onclick = _ok;
+            //btnok.addEventListener('click', _ok, false);
+            btncancel.onclick = _close;
+            //btncancel.addEventListener('click', _close, false);
+
+        }
+    }
+
+</script>
+</body>
+</html>
